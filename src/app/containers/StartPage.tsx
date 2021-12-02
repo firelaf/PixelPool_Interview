@@ -7,15 +7,18 @@ export const StartPage: React.FunctionComponent<{}> = () => {
     <div className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <Button
-        style={{
+        sx={{
           marginTop: "40px",
           marginLeft: "70px",
+          bgcolor: "secondary.light",
+          color: "secondary.contrastText",
+          fontWeight: "bold",
         }}
         component={Link}
         to="/about"
         onClick={() => console.log("Button clicked")}
-        color={"primary"}
         variant={"contained"}
+        color={"primary"}
       >
         About
       </Button>
