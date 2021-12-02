@@ -1,41 +1,43 @@
-import { createStyles, makeStyles } from '@mui/styles';
-import React from 'react';
-import logo from '../../images/PP-logo.png';
-import { DrawerComponent } from './Drawer';
+import { createStyles, makeStyles } from "@mui/styles";
+import React from "react";
+import logo from "../../images/PP-logo.png";
+import { DrawerComponent } from "./Drawer";
 import { Link } from "react-router-dom";
-import { AppBar, CssBaseline, Toolbar } from '@mui/material';
+import { AppBar, CssBaseline, Toolbar } from "@mui/material";
 
-const useStyles = makeStyles(() => createStyles({
-
+const useStyles = makeStyles(() =>
+  createStyles({
     toolbar: {
-        justifyContent: 'space-between',
-        background: '#ffffff'
+      justifyContent: "space-between",
+      background: "#ffffff",
     },
 
     logo: {
-        flexGrow: 'initial',
-        cursor: 'pointer',
-        maxHeight: '50px',
-        paddingTop: '3px',
-        width: 'auto',
-        imageRendering: 'crisp-edges',
+      flexGrow: "initial",
+      cursor: "pointer",
+      maxHeight: "50px",
+      paddingTop: "3px",
+      width: "auto",
+      imageRendering: "crisp-edges",
     },
-
-}));
+  })
+);
 
 export const Navigation: React.FunctionComponent = () => {
+  const classes = useStyles();
 
-    const classes = useStyles();
-
-    return (
-        <AppBar position='sticky'>
-            <CssBaseline />
-            <Toolbar className={classes.toolbar}>
-                <Link to="/" >
-                    <img className={classes.logo} src={logo} alt="logo" />
-                </Link>
-                <DrawerComponent />
-            </Toolbar>
-        </AppBar >
-    );
-}
+  return (
+    <AppBar
+      position="sticky"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <CssBaseline />
+      <Toolbar className={classes.toolbar}>
+        <Link to="/">
+          <img className={classes.logo} src={logo} alt="logo" />
+        </Link>
+        <DrawerComponent />
+      </Toolbar>
+    </AppBar>
+  );
+};

@@ -5,6 +5,13 @@ import {
   ListItemText,
   IconButton,
 } from "@mui/material";
+import {
+  Home as HomeIcon,
+  Info as InfoIcon,
+  MeetingRoom as LoginIcon,
+  PermContactCalendar as ContactIcon,
+  ContactSupport as TicketIcon,
+} from "@mui/icons-material";
 import { createStyles, makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Fragment, useState } from "react";
@@ -16,9 +23,12 @@ const useStyles = makeStyles(() =>
       textDecoration: "none",
       color: "black",
       fontSize: "20px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "left",
     },
     icon: {
-      color: "white",
+      marginRight: "0.6em",
     },
   })
 );
@@ -34,11 +44,15 @@ export const DrawerComponent: React.FunctionComponent = () => {
 
   return (
     <Fragment>
+      <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
+        <MenuIcon />
+      </IconButton>
       <Drawer open={openDrawer} onClose={CloseDrawer} anchor="right">
-        <List>
+        <List style={{ marginTop: "3.5em" }}>
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/">
+                <HomeIcon color="secondary" className={classes.icon} />
                 Home
               </Link>
             </ListItemText>
@@ -46,6 +60,7 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/about">
+                <InfoIcon color="secondary" className={classes.icon} />
                 About
               </Link>
             </ListItemText>
@@ -53,6 +68,7 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/login">
+                <LoginIcon color="secondary" className={classes.icon} />
                 Login
               </Link>
             </ListItemText>
@@ -60,6 +76,7 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/contactsUs">
+                <ContactIcon color="secondary" className={classes.icon} />
                 Contact us
               </Link>
             </ListItemText>
@@ -67,15 +84,13 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/tickets">
+                <TicketIcon color="secondary" className={classes.icon} />
                 Tickets
               </Link>
             </ListItemText>
           </ListItem>
         </List>
       </Drawer>
-      <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
-        <MenuIcon />
-      </IconButton>
     </Fragment>
   );
 };

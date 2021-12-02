@@ -16,6 +16,13 @@ const theme = createTheme({
       default: "#ffffff",
     },
   },
+  components: {
+    MuiIcon: {
+      styleOverrides: {
+        root: {},
+      },
+    },
+  },
 });
 
 export default theme;
