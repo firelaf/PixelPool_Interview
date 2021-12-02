@@ -11,11 +11,13 @@ import {
   MeetingRoom as LoginIcon,
   PermContactCalendar as ContactIcon,
   ContactSupport as TicketIcon,
+  AccountCircle as AccountIcon,
 } from "@mui/icons-material";
 import { createStyles, makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
+import { auth } from "../../firebaseSetup";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,12 +28,16 @@ const useStyles = makeStyles(() =>
       display: "flex",
       alignItems: "center",
       justifyContent: "left",
+      gap: "1rem",
     },
-    icon: {
-      marginRight: "0.6em",
-    },
+    icon: {},
   })
 );
+
+const displayTicketsBtn = () => {
+  if (!auth.currentUser) return "none";
+  return "block";
+};
 
 export const DrawerComponent: React.FunctionComponent = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -40,6 +46,23 @@ export const DrawerComponent: React.FunctionComponent = () => {
 
   const CloseDrawer = () => {
     setOpenDrawer(false);
+  };
+
+  const loggedIn = () => {
+    if (!auth.currentUser) {
+      return (
+        <Link className={classes.link} to="/login">
+          <LoginIcon color="secondary" />
+          Login
+        </Link>
+      );
+    }
+    return (
+      <Link className={classes.link} to="/login">
+        <AccountIcon color="secondary" />
+        User
+      </Link>
+    );
   };
 
   return (
@@ -52,7 +75,7 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/">
-                <HomeIcon color="secondary" className={classes.icon} />
+                <HomeIcon color="secondary" />
                 Home
               </Link>
             </ListItemText>
@@ -60,31 +83,26 @@ export const DrawerComponent: React.FunctionComponent = () => {
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/about">
-                <InfoIcon color="secondary" className={classes.icon} />
+                <InfoIcon color="secondary" />
                 About
               </Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={CloseDrawer}>
-            <ListItemText>
-              <Link className={classes.link} to="/login">
-                <LoginIcon color="secondary" className={classes.icon} />
-                Login
-              </Link>
-            </ListItemText>
+            <ListItemText>{loggedIn()}</ListItemText>
           </ListItem>
           <ListItem onClick={CloseDrawer}>
             <ListItemText>
               <Link className={classes.link} to="/contactsUs">
-                <ContactIcon color="secondary" className={classes.icon} />
+                <ContactIcon color="secondary" />
                 Contact us
               </Link>
             </ListItemText>
           </ListItem>
-          <ListItem onClick={CloseDrawer}>
+          <ListItem onClick={CloseDrawer} sx={{ display: displayTicketsBtn }}>
             <ListItemText>
               <Link className={classes.link} to="/tickets">
-                <TicketIcon color="secondary" className={classes.icon} />
+                <TicketIcon color="secondary" />
                 Tickets
               </Link>
             </ListItemText>
