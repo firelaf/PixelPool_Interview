@@ -17,7 +17,7 @@ import { createStyles, makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
-import { auth } from "../../firebaseSetup";
+import { useSelector, RootStateOrAny } from "react-redux";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -34,22 +34,24 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const displayTicketsBtn = () => {
-  if (!auth.currentUser) return "none";
-  return "block";
-};
-
 export const DrawerComponent: React.FunctionComponent = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const classes = useStyles();
 
+  const isLogged = useSelector((state: RootStateOrAny) => state.isLogged);
+
   const CloseDrawer = () => {
     setOpenDrawer(false);
   };
 
+  const displayTicketsBtn = () => {
+    if (!isLogged) return "none";
+    return "block";
+  };
+
   const loggedIn = () => {
-    if (!auth.currentUser) {
+    if (!isLogged) {
       return (
         <Link className={classes.link} to="/login">
           <LoginIcon color="secondary" />
