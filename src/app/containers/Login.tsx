@@ -15,6 +15,8 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { auth } from "../../firebaseSetup";
+import { useDispatch } from "react-redux";
+import { logIn, logOut } from "../actions/userActions";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +65,8 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const dispatch = useDispatch();
+
   const createAccount = async () => {
     try {
       await auth.createUserWithEmailAndPassword(username, password);
@@ -74,13 +78,19 @@ const Login = () => {
   const signIn = async () => {
     try {
       await auth.signInWithEmailAndPassword(username, password);
+      dispatch(logIn());
     } catch (error) {
       console.error(error);
     }
   };
 
   const signOut = async () => {
-    await auth.signOut();
+    try {
+      await auth.signOut();
+      dispatch(logOut());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> = (
