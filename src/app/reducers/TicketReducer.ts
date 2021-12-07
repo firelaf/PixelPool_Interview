@@ -35,6 +35,14 @@ export const TicketReducer: Reducer<TicketState[], TicketActions> = (
         ];
       else return state;
     }
+    // case TicketActionTypes.DELETE: {
+    //   const index = state.indexOf({action.id, action.ticketName, action.ticketDescription, TicketActionTypes.DELETE});
+    //   if(index > -1) {
+    //     state.splice(index, 1);
+    //     return state;
+    //   }
+    //   else return state;
+    // }
 
     default:
       return state;

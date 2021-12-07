@@ -2,10 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import { style } from "typestyle";
 import { Paper, Typography, TextField, Button } from "@mui/material";
 import { database } from "../../firebaseSetup";
-import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
+import { useDispatch } from "react-redux";
 import { OpenTicket } from "../actions/ticketActions";
 import Ticket from "../components/Ticket";
-import { TicketState } from "../reducers/TicketReducer";
 
 const classNames = {
   wrapper: style({
@@ -36,7 +35,7 @@ export const Tickets: React.FunctionComponent = () => {
   //const ticketID = useRef<HTMLInputElement>(document.createElement("input"));
 
   const dispatch = useDispatch();
-  const ticketState = useSelector((state: RootStateOrAny) => state.ticketState);
+  //const ticketState = useSelector((state: RootStateOrAny) => state.ticketState);
   const [tickets, updateTicketElements] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
@@ -51,6 +50,27 @@ export const Tickets: React.FunctionComponent = () => {
       ticketStatus: "open",
     });
     console.log(response.id);
+
+    dispatch(
+      OpenTicket(
+        response.id,
+        ticketName.current.value,
+        ticketDescription.current.value,
+        "open"
+      )
+    );
+
+    updateTicketElements((tickets) => [
+      ...tickets,
+      <Ticket
+        key={response.id}
+        id={response.id}
+        title={ticketName.current.value}
+        description={ticketDescription.current.value}
+      />,
+    ]);
+    ticketName.current.value = "";
+    ticketDescription.current.value = "";
   };
 
   async function getTickets() {
@@ -64,21 +84,16 @@ export const Tickets: React.FunctionComponent = () => {
           ticket.data().ticketStatus
         )
       );
-    });
-  }
-
-  function displayTickets() {
-    const ticketElements = ticketState.map((ticket: TicketState) => {
-      return (
+      updateTicketElements((tickets) => [
+        ...tickets,
         <Ticket
           key={ticket.id}
           id={ticket.id}
-          title={ticket.ticketName}
-          description={ticket.ticketDescription}
-        />
-      );
+          title={ticket.data().ticketName}
+          description={ticket.data().ticketDescription}
+        />,
+      ]);
     });
-    updateTicketElements(ticketElements);
   }
 
   return (
