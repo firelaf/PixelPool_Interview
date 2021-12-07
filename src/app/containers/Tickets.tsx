@@ -1,20 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { style } from "typestyle";
-import {
-  Paper,
-  Typography,
-  IconButton,
-  TextField,
-  Button,
-} from "@mui/material";
-import {
-  Cancel as CloseIcon,
-  AssignmentTurnedIn as ResolveIcon,
-  Delete as DeleteIcon,
-} from "@mui/icons-material";
+import { Paper, Typography, TextField, Button } from "@mui/material";
 import { database } from "../../firebaseSetup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import { OpenTicket } from "../actions/ticketActions";
+import Ticket from "../components/Ticket";
+import { TicketState } from "../reducers/TicketReducer";
 
 const classNames = {
   wrapper: style({
@@ -33,13 +24,6 @@ const classNames = {
     padding: "1.5em",
     margin: "0.5em 0",
   }),
-  title: style({
-    fontWeight: "bold",
-    marginRight: "3em",
-  }),
-  iconButton: style({
-    marginLeft: "auto",
-  }),
 };
 
 const db = database.collection("/tickets");
@@ -49,30 +33,52 @@ export const Tickets: React.FunctionComponent = () => {
   const ticketDescription = useRef<HTMLInputElement>(
     document.createElement("input")
   );
-  const ticketID = useRef<HTMLInputElement>(document.createElement("input"));
+  //const ticketID = useRef<HTMLInputElement>(document.createElement("input"));
 
   const dispatch = useDispatch();
+  const ticketState = useSelector((state: RootStateOrAny) => state.ticketState);
+  const [tickets, updateTicketElements] = useState<JSX.Element[]>([]);
 
-  const addTicketState = () => {
-    dispatch(OpenTicket(ticketID.current.value));
-  };
+  useEffect(() => {
+    getTickets();
+    // eslint-disable-next-line
+  }, []);
 
-  const handleAddTicket = () => {
-    console.log(ticketName.current.value);
-    console.log(ticketDescription.current.value);
-
-    db.add({
+  const handleAddTicket = async () => {
+    const response = await db.add({
       ticketName: ticketName.current.value,
       ticketDescription: ticketDescription.current.value,
       ticketStatus: "open",
     });
+    console.log(response.id);
   };
 
   async function getTickets() {
     const allTickets = await db.get();
     allTickets.docs.forEach((ticket) => {
-      console.log(ticket.data(), ticket.id);
+      dispatch(
+        OpenTicket(
+          ticket.id,
+          ticket.data().ticketName,
+          ticket.data().ticketDescription,
+          ticket.data().ticketStatus
+        )
+      );
     });
+  }
+
+  function displayTickets() {
+    const ticketElements = ticketState.map((ticket: TicketState) => {
+      return (
+        <Ticket
+          key={ticket.id}
+          id={ticket.id}
+          title={ticket.ticketName}
+          description={ticket.ticketDescription}
+        />
+      );
+    });
+    updateTicketElements(ticketElements);
   }
 
   return (
@@ -99,28 +105,7 @@ export const Tickets: React.FunctionComponent = () => {
           Add Ticket
         </Button>
       </Paper>
-      <Paper className={classNames.elements} square elevation={9}>
-        <Typography className={classNames.title}>Title</Typography>
-        <Typography>Description</Typography>
-        <IconButton color="primary" className={classNames.iconButton}>
-          <ResolveIcon></ResolveIcon>
-        </IconButton>
-        <IconButton>
-          <CloseIcon></CloseIcon>
-        </IconButton>
-        <IconButton>
-          <DeleteIcon></DeleteIcon>
-        </IconButton>
-      </Paper>
-      <Paper className={classNames.elements} square elevation={9}>
-        <Button variant="outlined" onClick={getTickets}>
-          Get Tickets
-        </Button>
-        <TextField variant="standard" label="Ticket ID" inputRef={ticketID} />
-        <Button variant="outlined" onClick={addTicketState}>
-          Add
-        </Button>
-      </Paper>
+      {tickets}
     </div>
   );
 };
