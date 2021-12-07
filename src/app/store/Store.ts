@@ -1,25 +1,25 @@
-import { applyMiddleware, combineReducers, createStore, Store } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { BasicReducer, IBasicState } from "../reducers/BasicReducer";
+import { TicketReducer, TicketState } from "../reducers/TicketReducer";
 import { isLoggedReducer } from "../reducers/isLogged";
 
 // Create an interface for the application state
 export interface IAppState {
-  basicState: IBasicState;
+  basicState: TicketState;
   isLogged: boolean;
 }
 
 // Create the root reducer
 const rootReducer = combineReducers({
-  basicState: BasicReducer,
+  ticketState: TicketReducer,
   isLogged: isLoggedReducer,
 });
 
 const composeEnhancers = composeWithDevTools({});
 
 // Create a configure store function of type `IAppState`
-export default function configureStore(): Store<IAppState, any> {
+export default function configureStore() {
   const store = createStore(
     rootReducer,
     composeEnhancers(applyMiddleware(thunk))
